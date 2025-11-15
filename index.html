@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FBX Building Destroyer Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="info">
+        <h1>🏗️ Building Destroyer</h1>
+        <div id="instructions">
+            <p><strong>조작법:</strong></p>
+            <ul>
+                <li>마우스 드래그: 카메라 회전</li>
+                <li>마우스 휠: 줌 인/아웃</li>
+                <li>클릭: 건물 파괴</li>
+                <li>스페이스바: 리셋</li>
+            </ul>
+        </div>
+        <div id="stats">
+            <p>파괴 점수: <span id="score">0</span></p>
+            <p>상태: <span id="status">모델 로딩 중...</span></p>
+        </div>
+    </div>
+
+    <div id="loading">
+        <div class="loader"></div>
+        <p>FBX 모델 로딩 중...</p>
+    </div>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <script type="module" src="main.js"></script>
+</body>
+</html>

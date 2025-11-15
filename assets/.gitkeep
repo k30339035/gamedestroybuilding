@@ -1,0 +1,13 @@
+# FBX 파일과 텍스처를 여기에 추가하세요
+
+## 사용 방법:
+1. building.fbx 파일을 이 폴더에 복사
+2. 텍스처 파일들도 함께 복사
+3. 게임을 실행하면 자동으로 로드됩니다
+
+## 예시 구조:
+assets/
+├── building.fbx
+├── texture_diffuse.png
+├── texture_normal.png
+└── texture_roughness.png

@@ -1,0 +1,28 @@
+{
+  "name": "fbx-building-destroyer",
+  "version": "1.0.0",
+  "description": "3D Building Destruction Game using FBX models",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "serve": "python3 -m http.server 8000"
+  },
+  "keywords": [
+    "three.js",
+    "fbx",
+    "3d",
+    "game",
+    "building",
+    "destruction"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "three": "^0.159.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}
