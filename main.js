@@ -104,29 +104,29 @@ class Game {
 
     setupFBXLoader() {
         const loader = new FBXLoader();
+        const textureLoader = new THREE.TextureLoader();
         const loadingElement = document.getElementById('loading');
         const statusElement = document.getElementById('status');
 
-        // FBX 파일 경로 - 나중에 실제 파일로 교체
-        const fbxPath = 'assets/building.fbx';
+        // 실제 FBX 파일 경로 (미래형 도시 건물)
+        const fbxPath = 'assets/Futuristic_Cityscape_1115025127_texture_fbx/Futuristic_Cityscape_1115025127_texture.fbx';
+        const texturePath = 'assets/Futuristic_Cityscape_1115025127_texture_fbx/Futuristic_Cityscape_1115025127_texture.png';
+        const normalPath = 'assets/Futuristic_Cityscape_1115025127_texture_fbx/Futuristic_Cityscape_1115025127_texture_normal.png';
+        const metallicPath = 'assets/Futuristic_Cityscape_1115025127_texture_fbx/Futuristic_Cityscape_1115025127_texture_metallic.png';
+        const roughnessPath = 'assets/Futuristic_Cityscape_1115025127_texture_fbx/Futuristic_Cityscape_1115025127_texture_roughness.png';
 
-        // 먼저 샘플 건물 생성 (FBX 파일이 없을 경우)
-        this.createSampleBuilding();
-        loadingElement.classList.add('hidden');
-        statusElement.textContent = '준비 완료!';
-        this.isLoaded = true;
+        // 텍스처들을 미리 로드
+        const baseTexture = textureLoader.load(texturePath);
+        const normalTexture = textureLoader.load(normalPath);
+        const metallicTexture = textureLoader.load(metallicPath);
+        const roughnessTexture = textureLoader.load(roughnessPath);
 
-        // FBX 파일이 있으면 로드 시도
+        // FBX 파일 로드
         loader.load(
             fbxPath,
             (object) => {
                 // FBX 로드 성공
-                console.log('FBX 모델 로드 성공!', object);
-
-                // 기존 샘플 건물 제거
-                if (this.building) {
-                    this.scene.remove(this.building);
-                }
+                console.log('🏙️ 미래형 도시 건물 로드 성공!', object);
 
                 // FBX 모델 설정
                 object.traverse((child) => {
@@ -134,22 +134,23 @@ class Game {
                         child.castShadow = true;
                         child.receiveShadow = true;
 
-                        // 재질이 있으면 그대로 사용, 없으면 기본 재질
-                        if (!child.material) {
-                            child.material = new THREE.MeshStandardMaterial({
-                                color: 0xcccccc,
-                                roughness: 0.7,
-                                metalness: 0.3
-                            });
-                        }
+                        // 고급 재질 적용 (PBR - Physically Based Rendering)
+                        child.material = new THREE.MeshStandardMaterial({
+                            map: baseTexture,              // 기본 색상 텍스처
+                            normalMap: normalTexture,       // 노말 맵 (입체감)
+                            metalnessMap: metallicTexture,  // 메탈릭 맵
+                            roughnessMap: roughnessTexture, // 거칠기 맵
+                            metalness: 0.5,                 // 금속성
+                            roughness: 0.7,                 // 거칠기
+                        });
                     }
                 });
 
-                // 크기 조정 (필요시)
+                // 크기 조정
                 const box = new THREE.Box3().setFromObject(object);
                 const size = box.getSize(new THREE.Vector3());
                 const maxDim = Math.max(size.x, size.y, size.z);
-                const scale = 20 / maxDim; // 적절한 크기로 조정
+                const scale = 30 / maxDim; // 미래형 도시는 좀 더 크게
                 object.scale.multiplyScalar(scale);
 
                 // 중심으로 이동
@@ -158,22 +159,33 @@ class Game {
                 object.position.y = size.y * scale / 2; // 지면 위에 배치
 
                 this.building = object;
+                this.originalFBXModel = object.clone(); // 리셋용 백업
                 this.scene.add(object);
 
                 loadingElement.classList.add('hidden');
-                statusElement.textContent = 'FBX 모델 로드 완료!';
+                statusElement.textContent = '미래형 도시 건물 로드 완료! 🏙️';
                 this.isLoaded = true;
+
+                console.log('모델 크기:', size);
+                console.log('스케일:', scale);
             },
             (xhr) => {
                 // 로딩 진행률
-                const percent = (xhr.loaded / xhr.total * 100).toFixed(0);
-                statusElement.textContent = `로딩 중... ${percent}%`;
+                if (xhr.lengthComputable) {
+                    const percent = (xhr.loaded / xhr.total * 100).toFixed(0);
+                    statusElement.textContent = `로딩 중... ${percent}%`;
+                } else {
+                    const loadedMB = (xhr.loaded / 1024 / 1024).toFixed(1);
+                    statusElement.textContent = `로딩 중... ${loadedMB}MB`;
+                }
             },
             (error) => {
                 // 로드 실패 (샘플 건물 사용)
-                console.log('FBX 파일 없음. 샘플 건물 사용:', error);
+                console.error('FBX 로드 실패:', error);
+                this.createSampleBuilding();
                 loadingElement.classList.add('hidden');
-                statusElement.textContent = '샘플 건물 사용 중 (FBX 파일을 assets/ 폴더에 넣어주세요)';
+                statusElement.textContent = '샘플 건물 사용 중 (FBX 로드 실패)';
+                this.isLoaded = true;
             }
         );
     }
@@ -414,9 +426,15 @@ class Game {
             this.scene.remove(this.building);
         }
 
-        this.createSampleBuilding();
-
-        document.getElementById('status').textContent = '게임 리셋!';
+        // FBX 모델이 있으면 다시 로드, 없으면 샘플 건물 생성
+        if (this.originalFBXModel) {
+            this.building = this.originalFBXModel.clone();
+            this.scene.add(this.building);
+            document.getElementById('status').textContent = '게임 리셋! 🏙️';
+        } else {
+            this.createSampleBuilding();
+            document.getElementById('status').textContent = '게임 리셋!';
+        }
     }
 
     animate() {

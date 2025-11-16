@@ -33,6 +33,9 @@ yarn-error.log*
 .cache/
 .parcel-cache/
 
-# Large FBX files (optional - uncomment if you don't want to commit large models)
-# assets/*.fbx
-# assets/**/*.fbx
+# Large FBX files and textures (too large for GitHub without LFS)
+# Users should download from Google Drive - see ASSETS.md
+assets/**/*.fbx
+assets/**/*.png
+assets/**/*.jpg
+assets/**/*.jpeg

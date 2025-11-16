@@ -2,6 +2,17 @@
 
 Three.js 기반의 3D 건물 파괴 게임입니다. FBX 파일을 업로드하여 나만의 건물을 파괴할 수 있습니다!
 
+## 🏙️ 포함된 모델
+
+이 게임에는 **미래형 도시 건물** 모델이 포함되어 있습니다:
+- 📦 FBX 모델: 129MB (Futuristic_Cityscape)
+- 🎨 고품질 텍스처 포함:
+  - Base Texture (4.73MB) - 기본 색상
+  - Normal Map (6.25MB) - 입체감
+  - Metallic Map (1.60MB) - 금속성
+  - Roughness Map (1.61MB) - 거칠기
+- ✨ PBR (Physically Based Rendering) 재질 적용
+
 ## ✨ 주요 기능
 
 - **FBX 모델 로드**: FBX 파일과 텍스처를 자동으로 로드
@@ -39,13 +50,18 @@ npm run serve
 
 브라우저에서 `http://localhost:8000` 또는 `http://localhost:5173` (Vite 사용 시) 접속
 
-## 📦 FBX 파일 추가 방법
+## 📦 다른 FBX 파일 사용하기
+
+게임에는 이미 미래형 도시 건물이 포함되어 있지만, 원하는 다른 건물 모델을 사용할 수 있습니다!
 
 ### 방법 1: 직접 추가
 
-1. `assets/` 폴더에 FBX 파일 복사
-2. 파일명을 `building.fbx`로 변경 (또는 `main.js`에서 경로 수정)
-3. 텍스처 파일이 있다면 같은 폴더에 복사
+1. `assets/` 폴더에 새 폴더 생성 (예: `my_building/`)
+2. FBX 파일과 텍스처들을 폴더에 복사
+3. `main.js`의 112번째 줄에서 경로 수정:
+   ```javascript
+   const fbxPath = 'assets/my_building/my_building.fbx';
+   ```
 
 ### 방법 2: 구글 드라이브에서 다운로드
 
@@ -54,7 +70,7 @@ npm run serve
 pip install gdown
 
 # 구글 드라이브 폴더 다운로드
-gdown --folder [구글드라이브링크] -O assets/
+gdown --folder [구글드라이브링크] -O assets/my_building/
 ```
 
 ### FBX 파일 구조 예시
